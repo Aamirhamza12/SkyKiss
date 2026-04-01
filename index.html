@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SkyKiss Weather</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    
+    <h1 class="logo">☁️ SkyKiss</h1>
+
+    <!-- Search -->
+    <div class="search-box">
+      <input type="text" id="cityInput" placeholder="Enter city...">
+      <button onclick="getWeather()">Search</button>
+    </div>
+
+    <!-- Weather Card -->
+    <div class="weather-card" id="weatherCard">
+      <h2 id="city">--</h2>
+      <h1 id="temp">--°C</h1>
+      <p id="desc">Weather condition</p>
+
+      <div class="extra">
+        <p>💧 Humidity: <span id="humidity">--</span>%</p>
+        <p>🌬️ Wind: <span id="wind">--</span> km/h</p>
+        <p>🌫️ Air Quality: <span id="air">Good</span></p>
+      </div>
+    </div>
+
+    <!-- Forecast -->
+    <div class="forecast" id="forecast">
+      <div class="day">Mon<br>--°C</div>
+      <div class="day">Tue<br>--°C</div>
+      <div class="day">Wed<br>--°C</div>
+      <div class="day">Thu<br>--°C</div>
+      <div class="day">Fri<br>--°C</div>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
