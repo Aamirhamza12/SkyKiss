@@ -1,45 +1,563 @@
+Style · CSS
+Copy
+
+/* ==============================
+   SkyKiss - style.css
+   Organized into clear sections
+   ============================== */
+ 
+ 
+/* ---- 1. CSS Variables (Theme Colors) ---- */
+/* We use variables so dark mode is easy to apply */
+:root {
+  --bg-color: #f0f4ff;
+  --card-bg: #ffffff;
+  --text-primary: #1a1a2e;
+  --text-secondary: #5a6a85;
+  --accent: #4f6ef7;
+  --accent-hover: #3a56d4;
+  --border: #e0e7ff;
+  --detail-bg: #f5f7ff;
+  --shadow: 0 8px 32px rgba(79, 110, 247, 0.12);
+  --input-bg: #ffffff;
+  --footer-color: #8899bb;
+}
+ 
+/* Dark mode variables (applied when body has .dark class) */
+body.dark {
+  --bg-color: #0f1225;
+  --card-bg: #1a1f3a;
+  --text-primary: #e8eeff;
+  --text-secondary: #8899cc;
+  --accent: #6b8bff;
+  --accent-hover: #5570e0;
+  --border: #2a3060;
+  --detail-bg: #141830;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --input-bg: #1e2444;
+  --footer-color: #4a5a88;
+}
+ 
+ 
+/* ---- 2. Base Reset & Body ---- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+ 
 body {
-  font-family: Arial;
-  text-align: center;
-  background: #f0f8ff;
-  transition: 0.3s;
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
 }
-
-.dark {
-  background: #1e1e1e;
-  color: white;
+ 
+ 
+/* ---- 3. Header ---- */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
-
-h1 {
-  margin-top: 20px;
+ 
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-
-input {
-  padding: 10px;
-  width: 250px;
-  margin: 10px;
+ 
+.logo-icon {
+  font-size: 1.6rem;
 }
-
-.buttons button {
-  padding: 10px;
-  margin: 5px;
+ 
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.5px;
+}
+ 
+/* Dark Mode Toggle Button */
+.theme-btn {
+  background: var(--detail-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  padding: 0.45rem 1rem;
+  border-radius: 20px;
   cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  transition: background 0.2s;
 }
-
-#weatherContainer {
+ 
+.theme-btn:hover {
+  background: var(--border);
+}
+ 
+ 
+/* ---- 4. Main Container ---- */
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1.2rem;
+}
+ 
+ 
+/* ---- 5. Search Section ---- */
+.search-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+ 
+.tagline {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 1.2rem;
+}
+ 
+/* Search input + button side by side */
+.search-box {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+ 
+.search-input {
+  flex: 1;
+  max-width: 400px;
+  padding: 0.75rem 1.2rem;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: 'Outfit', sans-serif;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s;
+}
+ 
+.search-input:focus {
+  border-color: var(--accent);
+}
+ 
+.search-btn {
+  padding: 0.75rem 1.5rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+ 
+.search-btn:hover {
+  background: var(--accent-hover);
+}
+ 
+.search-btn:active {
+  transform: scale(0.97);
+}
+ 
+/* Quick City Buttons */
+.quick-cities {
   display: flex;
   flex-wrap: wrap;
+  gap: 0.5rem;
   justify-content: center;
+  align-items: center;
 }
-
-.card {
-  background: white;
-  margin: 10px;
-  padding: 15px;
-  width: 200px;
+ 
+.quick-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+ 
+.quick-btn {
+  padding: 0.3rem 0.9rem;
+  background: var(--detail-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: background 0.2s, color 0.2s;
+}
+ 
+.quick-btn:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+ 
+ 
+/* ---- 6. Loader (Spinner) ---- */
+.loader {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+ 
+/* Spinning circle animation */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  animation: spin 0.8s linear infinite;
+}
+ 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+ 
+ 
+/* ---- 7. Error Message ---- */
+.error-msg {
+  text-align: center;
+  color: #e24b4a;
+  background: #fcebeb;
+  border: 1px solid #f09595;
+  border-radius: 12px;
+  padding: 1rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+ 
+body.dark .error-msg {
+  background: #2a1515;
+  border-color: #a32d2d;
+  color: #f09595;
+}
+ 
+ 
+/* ---- 8. Main Weather Card ---- */
+.weather-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.4s ease;
+}
+ 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+ 
+/* City name */
+.city-info {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+ 
+.city-name {
+  font-size: 2rem;
+  font-weight: 700;
+}
+ 
+.country-name {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+ 
+/* Temperature and icon */
+.main-weather {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+ 
+.temp-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+ 
+.weather-icon {
+  font-size: 3.5rem;
+}
+ 
+.temperature {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+ 
+.description {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+  margin-top: 0.3rem;
+}
+ 
+.feels-like {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+ 
+/* 4 detail boxes in a grid */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
+}
+ 
+.detail-box {
+  background: var(--detail-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+}
+ 
+.detail-icon {
+  font-size: 1.4rem;
+}
+ 
+.detail-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+ 
+.detail-value {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+ 
+ 
+/* ---- 9. Recent Searches ---- */
+.recent-section {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+ 
+.recent-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+ 
+.recent-title {
+  font-size: 1rem;
+  font-weight: 600;
+}
+ 
+.clear-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+}
+ 
+.clear-btn:hover {
+  background: var(--detail-bg);
+}
+ 
+.recent-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+ 
+/* Individual recent search tag */
+.recent-tag {
+  padding: 0.3rem 0.9rem;
+  background: var(--detail-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: background 0.2s;
+}
+ 
+.recent-tag:hover {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+ 
+ 
+/* ---- 10. Saved / Filter / Sort Section ---- */
+.saved-section {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+ 
+.saved-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+ 
+/* Controls row: filter input + sort dropdown */
+.controls {
+  display: flex;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+ 
+.filter-input,
+.sort-select {
+  flex: 1;
+  min-width: 140px;
+  padding: 0.6rem 1rem;
+  border: 1.5px solid var(--border);
   border-radius: 10px;
+  font-size: 0.9rem;
+  font-family: 'Outfit', sans-serif;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  outline: none;
 }
-
-.dark .card {
-  background: #333;
+ 
+.filter-input:focus,
+.sort-select:focus {
+  border-color: var(--accent);
+}
+ 
+/* Grid of saved weather mini-cards */
+.saved-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.8rem;
+}
+ 
+/* Individual saved city card */
+.saved-card {
+  background: var(--detail-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-align: center;
+}
+ 
+.saved-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(79,110,247,0.15);
+}
+ 
+.saved-card-city {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+ 
+.saved-card-temp {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin: 4px 0;
+}
+ 
+.saved-card-desc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+ 
+.saved-card-icon {
+  font-size: 1.8rem;
+  margin-bottom: 4px;
+}
+ 
+/* Empty state message */
+.empty-msg {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem;
+}
+ 
+ 
+/* ---- 11. Footer ---- */
+.footer {
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--footer-color);
+  border-top: 1px solid var(--border);
+  margin-top: 1rem;
+}
+ 
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+ 
+ 
+/* ---- 12. Utility Classes ---- */
+/* .hidden hides any element */
+.hidden {
+  display: none !important;
+}
+ 
+ 
+/* ---- 13. Responsive Design ---- */
+/* On smaller screens (mobile), adjust layout */
+@media (max-width: 480px) {
+  .tagline {
+    font-size: 1.4rem;
+  }
+ 
+  .search-box {
+    flex-direction: column;
+    align-items: stretch;
+  }
+ 
+  .search-btn {
+    width: 100%;
+  }
+ 
+  .details-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+ 
+  .temperature,
+  .weather-icon {
+    font-size: 2.8rem;
+  }
+ 
+  .header {
+    padding: 0.8rem 1rem;
+  }
 }

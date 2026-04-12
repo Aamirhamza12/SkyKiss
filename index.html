@@ -1,30 +1,670 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SkyKiss Weather App</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkyKiss - Weather App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet" />
+ 
+  <style>
+    :root {
+      --bg-color: #f0f4ff;
+      --card-bg: #ffffff;
+      --text-primary: #1a1a2e;
+      --text-secondary: #5a6a85;
+      --accent: #4f6ef7;
+      --accent-hover: #3a56d4;
+      --border: #e0e7ff;
+      --detail-bg: #f5f7ff;
+      --shadow: 0 8px 32px rgba(79,110,247,0.12);
+      --input-bg: #ffffff;
+    }
+    body.dark {
+      --bg-color: #0f1225;
+      --card-bg: #1a1f3a;
+      --text-primary: #e8eeff;
+      --text-secondary: #8899cc;
+      --accent: #6b8bff;
+      --accent-hover: #5570e0;
+      --border: #2a3060;
+      --detail-bg: #141830;
+      --shadow: 0 8px 32px rgba(0,0,0,0.4);
+      --input-bg: #1e2444;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-primary);
+      min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+ 
+    /* Header */
+    .header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo { display: flex; align-items: center; gap: 8px; }
+    .logo-icon { font-size: 1.6rem; }
+    .logo-text { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    .theme-btn {
+      background: var(--detail-bg); color: var(--text-primary);
+      border: 1px solid var(--border); padding: 0.45rem 1rem;
+      border-radius: 20px; cursor: pointer;
+      font-family: 'Outfit', sans-serif; font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+    .theme-btn:hover { background: var(--border); }
+ 
+    /* Container */
+    .container { max-width: 700px; margin: 0 auto; padding: 2rem 1.2rem; }
+ 
+    /* Search */
+    .search-section { text-align: center; margin-bottom: 2rem; }
+    .tagline { font-size: 1.8rem; font-weight: 700; margin-bottom: 1.2rem; }
+    .search-box { display: flex; gap: 0.6rem; justify-content: center; margin-bottom: 1rem; }
+    .search-input {
+      flex: 1; max-width: 400px; padding: 0.75rem 1.2rem;
+      border: 1.5px solid var(--border); border-radius: 12px;
+      font-size: 1rem; font-family: 'Outfit', sans-serif;
+      background: var(--input-bg); color: var(--text-primary);
+      outline: none; transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .search-btn {
+      padding: 0.75rem 1.5rem; background: var(--accent); color: #fff;
+      border: none; border-radius: 12px; font-size: 1rem;
+      font-family: 'Outfit', sans-serif; font-weight: 600;
+      cursor: pointer; transition: background 0.2s, transform 0.1s;
+    }
+    .search-btn:hover { background: var(--accent-hover); }
+    .search-btn:active { transform: scale(0.97); }
+    .search-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+ 
+    /* Quick Buttons */
+    .quick-cities { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; align-items: center; }
+    .quick-label { font-size: 0.85rem; color: var(--text-secondary); }
+    .quick-btn {
+      padding: 0.3rem 0.9rem; background: var(--detail-bg);
+      border: 1px solid var(--border); border-radius: 20px;
+      font-size: 0.85rem; font-family: 'Outfit', sans-serif;
+      cursor: pointer; color: var(--text-primary);
+      transition: background 0.2s, color 0.2s;
+    }
+    .quick-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+ 
+    /* Loader */
+    .loader { text-align: center; padding: 2rem; color: var(--text-secondary); }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid var(--border); border-top-color: var(--accent);
+      border-radius: 50%; margin: 0 auto 1rem;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+ 
+    /* Error */
+    .error-msg {
+      text-align: center; color: #e24b4a; background: #fcebeb;
+      border: 1px solid #f09595; border-radius: 12px;
+      padding: 1rem; font-weight: 500; margin-bottom: 1rem;
+    }
+    body.dark .error-msg { background: #2a1515; border-color: #a32d2d; color: #f09595; }
+ 
+    /* Weather Card */
+    .weather-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 20px; padding: 2rem; box-shadow: var(--shadow);
+      margin-bottom: 1.5rem; animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .city-info { text-align: center; margin-bottom: 1rem; }
+    .city-name { font-size: 2rem; font-weight: 700; }
+    .country-name { font-size: 1rem; color: var(--text-secondary); margin-top: 2px; }
+    .main-weather { text-align: center; margin-bottom: 1.5rem; }
+    .temp-block { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .weather-icon { font-size: 3.5rem; }
+    .temperature { font-size: 3.5rem; font-weight: 700; color: var(--accent); }
+    .description { font-size: 1.1rem; color: var(--text-secondary); text-transform: capitalize; margin-top: 0.3rem; }
+    .feels-like { font-size: 0.9rem; color: var(--text-secondary); margin-top: 4px; }
+    .details-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+    .detail-box {
+      background: var(--detail-bg); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1rem;
+      display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center;
+    }
+    .detail-icon { font-size: 1.4rem; }
+    .detail-label { font-size: 0.78rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+    .detail-value { font-size: 1.1rem; font-weight: 600; }
+ 
+    /* Recent Searches */
+    .recent-section {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.2rem; margin-bottom: 1.5rem;
+    }
+    .recent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+    .recent-title { font-size: 1rem; font-weight: 600; }
+    .clear-btn {
+      background: none; border: 1px solid var(--border); border-radius: 8px;
+      padding: 0.25rem 0.75rem; font-size: 0.8rem; color: var(--text-secondary);
+      cursor: pointer; font-family: 'Outfit', sans-serif;
+    }
+    .clear-btn:hover { background: var(--detail-bg); }
+    .recent-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .recent-tag {
+      padding: 0.3rem 0.9rem; background: var(--detail-bg);
+      border: 1px solid var(--border); border-radius: 20px;
+      font-size: 0.85rem; cursor: pointer; color: var(--text-primary);
+      font-family: 'Outfit', sans-serif; transition: background 0.2s;
+    }
+    .recent-tag:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+ 
+    /* Saved Section */
+    .saved-section {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;
+    }
+    .saved-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; }
+    .controls { display: flex; gap: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .filter-input, .sort-select {
+      flex: 1; min-width: 140px; padding: 0.6rem 1rem;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 0.9rem; font-family: 'Outfit', sans-serif;
+      background: var(--input-bg); color: var(--text-primary); outline: none;
+    }
+    .filter-input:focus, .sort-select:focus { border-color: var(--accent); }
+    .saved-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.8rem; }
+    .saved-card {
+      background: var(--detail-bg); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1rem; cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s; text-align: center;
+    }
+    .saved-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(79,110,247,0.15); }
+    .saved-card-city { font-weight: 600; font-size: 0.95rem; }
+    .saved-card-temp { font-size: 1.4rem; font-weight: 700; color: var(--accent); margin: 4px 0; }
+    .saved-card-desc { font-size: 0.78rem; color: var(--text-secondary); text-transform: capitalize; }
+    .saved-card-icon { font-size: 1.8rem; margin-bottom: 4px; }
+ 
+    /* Footer */
+    .footer {
+      text-align: center; padding: 1.5rem; font-size: 0.85rem;
+      color: var(--text-secondary); border-top: 1px solid var(--border);
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+ 
+    .hidden { display: none !important; }
+ 
+    @media (max-width: 480px) {
+      .tagline { font-size: 1.4rem; }
+      .search-box { flex-direction: column; align-items: stretch; }
+      .search-btn { width: 100%; }
+      .temperature, .weather-icon { font-size: 2.8rem; }
+      .header { padding: 0.8rem 1rem; }
+    }
+  </style>
 </head>
 <body>
-
-  <h1>🌤️ SkyKiss Weather App</h1>
-
-  <!-- Search -->
-  <input type="text" id="searchInput" placeholder="Search city...">
-
-  <!-- Buttons -->
-  <div class="buttons">
-    <button onclick="sortTemp()">Sort by Temp</button>
-    <button onclick="filterHot()">Hot Cities</button>
-    <button onclick="toggleMode()">🌙 Toggle Mode</button>
-  </div>
-
-  <!-- Loader -->
-  <p id="loading">Loading...</p>
-
-  <!-- Weather Cards -->
-  <div id="weatherContainer"></div>
-
-  <script src="script.js"></script>
+ 
+  <header class="header">
+    <div class="logo">
+      <span class="logo-icon">🌤️</span>
+      <span class="logo-text">SkyKiss</span>
+    </div>
+    <button id="themeToggle" class="theme-btn">🌙 Dark Mode</button>
+  </header>
+ 
+  <main class="container">
+ 
+    <section class="search-section">
+      <h1 class="tagline">What's the sky doing today?</h1>
+      <div class="search-box">
+        <input type="text" id="cityInput" placeholder="Search any city, state or country..." class="search-input" />
+        <button id="searchBtn" class="search-btn">Search</button>
+      </div>
+      <div class="quick-cities">
+        <span class="quick-label">Quick search:</span>
+        <button class="quick-btn" data-city="Delhi">Delhi</button>
+        <button class="quick-btn" data-city="Mumbai">Mumbai</button>
+        <button class="quick-btn" data-city="London">London</button>
+        <button class="quick-btn" data-city="New York">New York</button>
+        <button class="quick-btn" data-city="Tokyo">Tokyo</button>
+        <button class="quick-btn" data-city="Dubai">Dubai</button>
+      </div>
+    </section>
+ 
+    <div id="loader" class="loader hidden">
+      <div class="spinner"></div>
+      <p>Fetching weather data...</p>
+    </div>
+ 
+    <div id="errorMsg" class="error-msg hidden">
+      ⚠️ Location not found. Please check the spelling and try again.
+    </div>
+ 
+    <section id="weatherCard" class="weather-card hidden">
+      <div class="city-info">
+        <h2 id="cityName" class="city-name">--</h2>
+        <p id="countryName" class="country-name">--</p>
+      </div>
+      <div class="main-weather">
+        <div class="temp-block">
+          <span id="weatherIcon" class="weather-icon">🌤️</span>
+          <span id="temperature" class="temperature">--°C</span>
+        </div>
+        <p id="description" class="description">--</p>
+        <p id="feelsLike" class="feels-like">Feels like --°C</p>
+      </div>
+      <div class="details-grid">
+        <div class="detail-box">
+          <span class="detail-icon">💧</span>
+          <span class="detail-label">Humidity</span>
+          <span id="humidity" class="detail-value">--%</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-icon">💨</span>
+          <span class="detail-label">Wind Speed</span>
+          <span id="windSpeed" class="detail-value">-- km/h</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-icon">🌡️</span>
+          <span class="detail-label">Min Temp</span>
+          <span id="minTemp" class="detail-value">--°C</span>
+        </div>
+        <div class="detail-box">
+          <span class="detail-icon">🌡️</span>
+          <span class="detail-label">Max Temp</span>
+          <span id="maxTemp" class="detail-value">--°C</span>
+        </div>
+      </div>
+    </section>
+ 
+    <section id="recentSection" class="recent-section hidden">
+      <div class="recent-header">
+        <h3 class="recent-title">🕒 Recent Searches</h3>
+        <button id="clearHistory" class="clear-btn">Clear</button>
+      </div>
+      <div id="recentList" class="recent-list"></div>
+    </section>
+ 
+    <section id="savedSection" class="saved-section hidden">
+      <h3 class="saved-title">📌 Saved Weather Results</h3>
+      <div class="controls">
+        <input type="text" id="filterInput" placeholder="Filter by city name..." class="filter-input" />
+        <select id="sortSelect" class="sort-select">
+          <option value="default">Sort by...</option>
+          <option value="temp-asc">Temp: Low to High</option>
+          <option value="temp-desc">Temp: High to Low</option>
+          <option value="name-asc">Name: A to Z</option>
+          <option value="humidity-desc">Humidity: High to Low</option>
+        </select>
+      </div>
+      <div id="savedList" class="saved-list"></div>
+    </section>
+ 
+  </main>
+ 
+  <footer class="footer">
+    <p>SkyKiss &copy; 2025 | Data by <a href="https://open-meteo.com" target="_blank">Open-Meteo</a></p>
+  </footer>
+ 
+  <script>
+    // =====================================================
+    // SkyKiss — Weather App
+    // API: Open-Meteo (100% free, no API key, no CORS block)
+    //
+    // HOW IT WORKS (2 steps):
+    // Step 1 → Geocoding API: city name → latitude & longitude
+    // Step 2 → Weather API:   lat/lon   → actual weather data
+    // =====================================================
+ 
+    // Grab all HTML elements we need
+    const cityInput     = document.getElementById("cityInput");
+    const searchBtn     = document.getElementById("searchBtn");
+    const loader        = document.getElementById("loader");
+    const errorMsg      = document.getElementById("errorMsg");
+    const weatherCard   = document.getElementById("weatherCard");
+    const recentSection = document.getElementById("recentSection");
+    const savedSection  = document.getElementById("savedSection");
+    const recentList    = document.getElementById("recentList");
+    const savedList     = document.getElementById("savedList");
+    const themeToggle   = document.getElementById("themeToggle");
+    const filterInput   = document.getElementById("filterInput");
+    const sortSelect    = document.getElementById("sortSelect");
+    const clearHistory  = document.getElementById("clearHistory");
+    const quickBtns     = document.querySelectorAll(".quick-btn");
+ 
+    // App state — load saved data from localStorage
+    let recentSearches = JSON.parse(localStorage.getItem("skyKissRecent")) || [];
+    let savedWeather   = JSON.parse(localStorage.getItem("skyKissSaved"))  || [];
+    let isDarkMode     = localStorage.getItem("skyKissDark") === "true";
+ 
+    // Run on page load
+    applyTheme();
+    renderRecentSearches();
+    renderSavedWeather(savedWeather);
+ 
+ 
+    // =====================================================
+    // 1. DARK / LIGHT MODE TOGGLE
+    // =====================================================
+    function applyTheme() {
+      if (isDarkMode) {
+        document.body.classList.add("dark");
+        themeToggle.textContent = "☀️ Light Mode";
+      } else {
+        document.body.classList.remove("dark");
+        themeToggle.textContent = "🌙 Dark Mode";
+      }
+    }
+ 
+    themeToggle.addEventListener("click", function () {
+      isDarkMode = !isDarkMode;
+      localStorage.setItem("skyKissDark", isDarkMode);
+      applyTheme();
+    });
+ 
+ 
+    // =====================================================
+    // 2. SEARCH TRIGGERS
+    // =====================================================
+ 
+    // Search button click
+    searchBtn.addEventListener("click", function () {
+      var city = cityInput.value.trim();
+      if (city !== "") fetchWeather(city);
+    });
+ 
+    // Enter key press
+    cityInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        var city = cityInput.value.trim();
+        if (city !== "") fetchWeather(city);
+      }
+    });
+ 
+    // Quick city buttons
+    quickBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        fetchWeather(btn.getAttribute("data-city"));
+      });
+    });
+ 
+ 
+    // =====================================================
+    // 3. FETCH WEATHER DATA
+    //    Uses 2 free APIs from Open-Meteo — no key needed
+    // =====================================================
+    async function fetchWeather(cityQuery) {
+      showLoader();
+      searchBtn.disabled = true;
+ 
+      try {
+        // --- STEP 1: Convert city name to coordinates ---
+        var geoURL = "https://geocoding-api.open-meteo.com/v1/search?name=" +
+                     encodeURIComponent(cityQuery) +
+                     "&count=1&language=en&format=json";
+ 
+        var geoResponse = await fetch(geoURL);
+        var geoData     = await geoResponse.json();
+ 
+        // If no place found, show error
+        if (!geoData.results || geoData.results.length === 0) {
+          throw new Error("Not found");
+        }
+ 
+        var place   = geoData.results[0];
+        var lat     = place.latitude;
+        var lon     = place.longitude;
+        var name    = place.name;
+        var country = place.country  || "";
+        var region  = place.admin1   || "";
+ 
+        // --- STEP 2: Get weather using coordinates ---
+        var weatherURL = "https://api.open-meteo.com/v1/forecast" +
+          "?latitude="  + lat +
+          "&longitude=" + lon +
+          "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m" +
+          "&daily=temperature_2m_max,temperature_2m_min" +
+          "&timezone=auto&forecast_days=1";
+ 
+        var weatherResponse = await fetch(weatherURL);
+        var weatherData     = await weatherResponse.json();
+ 
+        var current = weatherData.current;
+        var daily   = weatherData.daily;
+ 
+        // Build result object
+        var result = {
+          cityName   : name,
+          region     : region,
+          country    : country,
+          tempC      : Math.round(current.temperature_2m),
+          feelsLikeC : Math.round(current.apparent_temperature),
+          humidity   : current.relative_humidity_2m,
+          windKmph   : Math.round(current.wind_speed_10m),
+          weatherCode: current.weather_code,
+          description: getDescription(current.weather_code),
+          minTempC   : Math.round(daily.temperature_2m_min[0]),
+          maxTempC   : Math.round(daily.temperature_2m_max[0])
+        };
+ 
+        displayWeather(result);
+        saveToRecent(result.cityName);
+        saveToSaved(result);
+ 
+      } catch (err) {
+        showError();
+      }
+ 
+      searchBtn.disabled = false;
+    }
+ 
+ 
+    // =====================================================
+    // 4. SHOW WEATHER ON SCREEN
+    // =====================================================
+    function displayWeather(w) {
+      document.getElementById("cityName").textContent    = w.cityName;
+      document.getElementById("countryName").textContent = [w.region, w.country].filter(Boolean).join(", ");
+      document.getElementById("temperature").textContent = w.tempC + "°C";
+      document.getElementById("feelsLike").textContent   = "Feels like " + w.feelsLikeC + "°C";
+      document.getElementById("description").textContent = w.description;
+      document.getElementById("humidity").textContent    = w.humidity + "%";
+      document.getElementById("windSpeed").textContent   = w.windKmph + " km/h";
+      document.getElementById("minTemp").textContent     = w.minTempC + "°C";
+      document.getElementById("maxTemp").textContent     = w.maxTempC + "°C";
+      document.getElementById("weatherIcon").textContent = getEmoji(w.weatherCode);
+ 
+      hideLoader();
+      weatherCard.classList.remove("hidden");
+      errorMsg.classList.add("hidden");
+ 
+      // Scroll to weather card smoothly
+      weatherCard.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+ 
+ 
+    // =====================================================
+    // 5. WEATHER CODE → TEXT & EMOJI
+    //    Open-Meteo uses WMO standard weather codes
+    // =====================================================
+    function getDescription(code) {
+      if (code === 0)                        return "Clear Sky";
+      if (code === 1)                        return "Mainly Clear";
+      if (code === 2)                        return "Partly Cloudy";
+      if (code === 3)                        return "Overcast";
+      if (code === 45 || code === 48)        return "Foggy";
+      if (code >= 51 && code <= 57)          return "Drizzle";
+      if (code >= 61 && code <= 67)          return "Rain";
+      if (code >= 71 && code <= 77)          return "Snowfall";
+      if (code >= 80 && code <= 82)          return "Rain Showers";
+      if (code === 85 || code === 86)        return "Snow Showers";
+      if (code >= 95 && code <= 99)          return "Thunderstorm";
+      return "Unknown";
+    }
+ 
+    function getEmoji(code) {
+      if (code === 0)                        return "☀️";
+      if (code === 1)                        return "🌤️";
+      if (code === 2)                        return "⛅";
+      if (code === 3)                        return "☁️";
+      if (code === 45 || code === 48)        return "🌫️";
+      if (code >= 51 && code <= 57)          return "🌦️";
+      if (code >= 61 && code <= 67)          return "🌧️";
+      if (code >= 71 && code <= 77)          return "❄️";
+      if (code >= 80 && code <= 82)          return "🌧️";
+      if (code === 85 || code === 86)        return "🌨️";
+      if (code >= 95 && code <= 99)          return "⛈️";
+      return "🌤️";
+    }
+ 
+ 
+    // =====================================================
+    // 6. RECENT SEARCHES
+    // =====================================================
+    function saveToRecent(cityName) {
+      // .filter() HOF — remove duplicate
+      recentSearches = recentSearches.filter(function (name) {
+        return name.toLowerCase() !== cityName.toLowerCase();
+      });
+      recentSearches.unshift(cityName);
+      recentSearches = recentSearches.slice(0, 8);
+      localStorage.setItem("skyKissRecent", JSON.stringify(recentSearches));
+      renderRecentSearches();
+    }
+ 
+    function renderRecentSearches() {
+      if (recentSearches.length === 0) {
+        recentSection.classList.add("hidden");
+        return;
+      }
+      recentSection.classList.remove("hidden");
+      recentList.innerHTML = "";
+ 
+      // .forEach() HOF — make a tag button for each city
+      recentSearches.forEach(function (city) {
+        var tag = document.createElement("button");
+        tag.textContent = city;
+        tag.className   = "recent-tag";
+        tag.addEventListener("click", function () { fetchWeather(city); });
+        recentList.appendChild(tag);
+      });
+    }
+ 
+    clearHistory.addEventListener("click", function () {
+      recentSearches = [];
+      localStorage.removeItem("skyKissRecent");
+      recentSection.classList.add("hidden");
+    });
+ 
+ 
+    // =====================================================
+    // 7. SAVE WEATHER RESULTS
+    // =====================================================
+    function saveToSaved(w) {
+      // .filter() HOF — remove existing entry for same city
+      savedWeather = savedWeather.filter(function (item) {
+        return item.cityName.toLowerCase() !== w.cityName.toLowerCase();
+      });
+      savedWeather.unshift(w);
+      savedWeather = savedWeather.slice(0, 12);
+      localStorage.setItem("skyKissSaved", JSON.stringify(savedWeather));
+      renderSavedWeather(savedWeather);
+    }
+ 
+ 
+    // =====================================================
+    // 8. FILTER & SORT — using Array HOFs
+    // =====================================================
+    function filterSaved(searchText) {
+      // .filter() HOF — keep only matching cities
+      var filtered = savedWeather.filter(function (item) {
+        return item.cityName.toLowerCase().includes(searchText.toLowerCase());
+      });
+      sortAndRender(filtered);
+    }
+ 
+    function sortAndRender(list) {
+      var sortBy = sortSelect.value;
+      var sorted;
+ 
+      if (sortBy === "temp-asc") {
+        sorted = list.slice().sort(function (a, b) { return a.tempC - b.tempC; });
+      } else if (sortBy === "temp-desc") {
+        sorted = list.slice().sort(function (a, b) { return b.tempC - a.tempC; });
+      } else if (sortBy === "name-asc") {
+        sorted = list.slice().sort(function (a, b) { return a.cityName.localeCompare(b.cityName); });
+      } else if (sortBy === "humidity-desc") {
+        sorted = list.slice().sort(function (a, b) { return b.humidity - a.humidity; });
+      } else {
+        sorted = list;
+      }
+ 
+      renderSavedWeather(sorted);
+    }
+ 
+    function renderSavedWeather(list) {
+      if (list.length === 0) {
+        savedSection.classList.add("hidden");
+        return;
+      }
+      savedSection.classList.remove("hidden");
+      savedList.innerHTML = "";
+ 
+      // .forEach() HOF — create a card for each saved city
+      list.forEach(function (item) {
+        var card = document.createElement("div");
+        card.className = "saved-card";
+        card.innerHTML =
+          '<div class="saved-card-icon">' + getEmoji(item.weatherCode) + '</div>' +
+          '<div class="saved-card-city">' + item.cityName + '</div>' +
+          '<div class="saved-card-temp">' + item.tempC + '°C</div>' +
+          '<div class="saved-card-desc">' + item.description + '</div>';
+        card.addEventListener("click", function () { fetchWeather(item.cityName); });
+        savedList.appendChild(card);
+      });
+    }
+ 
+    // Debouncing on filter input — wait 300ms after user stops typing
+    var debounceTimer;
+    filterInput.addEventListener("input", function () {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(function () {
+        filterSaved(filterInput.value);
+      }, 300);
+    });
+ 
+    sortSelect.addEventListener("change", function () {
+      filterSaved(filterInput.value);
+    });
+ 
+ 
+    // =====================================================
+    // 9. LOADER / ERROR HELPERS
+    // =====================================================
+    function showLoader() {
+      loader.classList.remove("hidden");
+      weatherCard.classList.add("hidden");
+      errorMsg.classList.add("hidden");
+    }
+    function hideLoader() {
+      loader.classList.add("hidden");
+    }
+    function showError() {
+      loader.classList.add("hidden");
+      errorMsg.classList.remove("hidden");
+      weatherCard.classList.add("hidden");
+    }
+ 
+  </script>
 </body>
 </html>
